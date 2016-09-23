@@ -3,7 +3,7 @@
 #include <digitalWriteFast.h>
 DualVNH5019MotorShield md; //instantaneous object
 //int encoderPin1 = 2;
-int encoderPinLA = 3;
+int encoderPinLA = 2;
 int encoderPinLB=  5;
 int encoderPinRA= 11;
 int encoderPinRB= 13;
@@ -30,15 +30,15 @@ double motorEncoderDiff=0;
 //int lastLSB = 0;
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(1200);
   
-   pinMode(encoderPinLA, INPUT);
+    pinMode(encoderPinLA, INPUT);
     pinMode(encoderPinLB, INPUT);
     pinMode(encoderPinRA, INPUT);
     pinMode(encoderPinRB, INPUT);
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
-   PCintPort::attachInterrupt(encoderPinLA, &motorLISRA, CHANGE);  //Attach left motor encoder interrupt pin to the ISR
+    PCintPort::attachInterrupt(encoderPinLA, &motorLISRA, CHANGE);  //Attach left motor encoder interrupt pin to the ISR
     PCintPort::attachInterrupt(encoderPinLB, &motorLISRB, CHANGE);  //Attach left motor encoder interrupt pin to the ISR
     PCintPort::attachInterrupt(encoderPinRA, &motorRISRA, CHANGE);  //Attach right motor encoder interrupt pin to the ISR
     PCintPort::attachInterrupt(encoderPinRB, &motorRISRB, CHANGE);  //Attach left motor encoder interrupt pin to the ISR
@@ -62,14 +62,15 @@ void loop() {
   // put your main code here, to run repeatedly:
   //rotateRight();
   
- // double val = digitalRead(encoderPinLA);
+  double val = digitalRead(encoderPinLA);
   //md.setM1Speed(200);
   //md.setM2Speed(200);
   //rotateClock(1,-1.120);
+  rotateRight();
   move();
-  //rotateRight();
   
- // Serial.println(val);
+  
+  Serial.println(val);
 }
 
 
@@ -82,8 +83,7 @@ void move(){
     
     motorEncoderDiff = motorLacc - motorRacc;
         motorLDiff = motorLacc - motorLprevaccm;
-        Serial.print("MotorLCount: ");
-        Serial.println(motorLDiff);
+        
         motorRDiff = motorRacc - motorRprevaccm;
         currTime = millis() + 1;  //Current time since the start of execution. Plus 1 to avoid divide by 0.
         Serial.print("Current time");
@@ -91,6 +91,8 @@ void move(){
         motorLSpeed = motorLDiff / (currTime - prevTime);
         Serial.print("Motor L Speed: ");
         Serial.println(motorLSpeed);
+        Serial.print("MotorLCount: ");
+        Serial.println(motorLDiff);
         motorRSpeed = motorRDiff / (currTime - prevTime);
         Serial.print("Motor R Speed: ");
         Serial.println(motorRSpeed);
